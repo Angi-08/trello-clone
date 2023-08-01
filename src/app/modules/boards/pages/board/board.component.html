@@ -1,0 +1,167 @@
+<div *ngIf="board" class="w-full h-full px-4 pb-4" [ngClass]="colors">
+  <div class="flex flex-col h-full">
+    <div>
+      <h2 class="text-xl font-bold text-white my-4">{{ board.title }}</h2>
+    </div>
+    <div class="flex flex-row space-x-2">
+      <app-btn color="gray" (click)="openEditForm()">Edit board</app-btn>
+    </div>
+    <div class="flex grow items-start w-full h-full overflow-x-scroll" cdkDropListGroup>
+      <div class="rounded bg-gray-200 w-72 p-2 mr-3 shrink-0" *ngFor="let list of board?.lists">
+        <div class="flex justify-between py-1">
+          <h3 class="text-sm font-bold ml-2">{{ list.title }}</h3>
+        </div>
+
+        <div class="text-sm mt-2 min-h-[2.5rem]" [id]="list.id" cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]="list.cards">
+          <div
+            (click)="openDialog(card)"
+            *ngFor="let card of list.cards"
+            cdkDrag
+            class="bg-white shadow p-2 rounded mt-2 border-b border-x-gray-300 cursor-pointer hover:bg-gray-400"
+          >
+            {{ card.title }}
+          </div>
+        </div>
+        <div class="mt-5">
+          <app-btn *ngIf="!list.showCardForm" color="light" (click)="openFormCard(list)">Add a card</app-btn>
+          <div class="w-full" *ngIf="list.showCardForm">
+            <textarea [formControl]="inputCard" class="w-full"></textarea>
+            <div class="flex space-x-2 justify-between">
+              <app-btn color="success" (click)="createCard(list)">Create</app-btn>
+              <app-btn color="light" (click)="closeCardForm(list)">Close</app-btn>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="shrink-0">
+        <app-btn *ngIf="!showListForm" color="light" (click)="showListForm = !showListForm">Add another list</app-btn>
+        <div class="w-full" *ngIf="showListForm">
+          <textarea [formControl]="inputList" class="w-full"></textarea>
+          <div class="flex space-x-2 justify-between">
+            <app-btn color="success" (click)="addList()">Create</app-btn>
+            <app-btn color="light" (click)="showListForm = !showListForm">Close</app-btn>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulario de edición de tablero -->
+  <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50" *ngIf="showEditForm">
+    <div class="bg-white p-6 rounded shadow">
+    <div class="flex space-x-2 mb-5">
+      <fa-icon class="text-gray-800" [icon]="faCheckToSlot"></fa-icon>
+      <div class="flex flex-col">
+        <h3 class="text-lg font-semibold text-gray-800">
+          <input [(ngModel)]="editTitle" class="text-lg font-semibold text-gray-800 focus:outline-none border-b-2 border-gray-300 bg-transparent" />
+        </h3>
+        
+      </div>
+    </div>
+      <div class="flex flex-wrap">
+        <div class="flex items-center mr-4">
+          <input
+            id="sky-radio"
+            type="radio"
+            value="sky"
+            name="backgroundColor"
+            [(ngModel)]="editBackgroundColor"
+            class="hidden peer"
+          />
+          <label
+            for="sky-radio"
+            class="inline-flex items-center justify-center w-8 h-8 text-transparent border border-gray-200 rounded cursor-pointer bg-sky-700 hover:bg-sky-500 peer-checked:text-white"
+            >
+            <fa-icon [icon]="faCheck"></fa-icon>
+          </label>
+        </div>
+        <div class="flex items-center mr-4">
+          <input
+            id="yellow-radio"
+            type="radio"
+            value="yellow"
+            name="backgroundColor"
+            [(ngModel)]="editBackgroundColor"
+            class="hidden peer"
+          />
+          <label
+            for="yellow-radio"
+            class="inline-flex items-center justify-center w-8 h-8 text-transparent border border-gray-200 rounded cursor-pointer bg-yellow-700 hover:bg-yellow-500 peer-checked:text-white"
+            >
+            <fa-icon [icon]="faCheck"></fa-icon>
+          </label>
+        </div>
+        <div class="flex items-center mr-4">
+          <input
+            id="green-radio"
+            type="radio"
+            value="green"
+            name="backgroundColor"
+            [(ngModel)]="editBackgroundColor"
+            class="hidden peer"
+          />
+          <label
+            for="green-radio"
+            class="inline-flex items-center justify-center w-8 h-8 text-transparent border border-gray-200 rounded cursor-pointer bg-green-700 hover:bg-green-500 peer-checked:text-white"
+            >
+            <fa-icon [icon]="faCheck"></fa-icon>
+          </label>
+        </div>
+        <div class="flex items-center mr-4">
+          <input
+            id="red-radio"
+            type="radio"
+            value="red"
+            name="backgroundColor"
+            [(ngModel)]="editBackgroundColor"
+            class="hidden peer"
+          />
+          <label
+            for="red-radio"
+            class="inline-flex items-center justify-center w-8 h-8 text-transparent border border-gray-200 rounded cursor-pointer bg-red-700 hover:bg-red-500 peer-checked:text-white"
+            >
+            <fa-icon [icon]="faCheck"></fa-icon>
+          </label>
+        </div>
+        <div class="flex items-center mr-4">
+          <input
+            id="violet-radio"
+            type="radio"
+            value="violet"
+            name="backgroundColor"
+            [(ngModel)]="editBackgroundColor"
+            class="hidden peer"
+          />
+          <label
+            for="violet-radio"
+            class="inline-flex items-center justify-center w-8 h-8 text-transparent border border-gray-200 rounded cursor-pointer bg-violet-700 hover:bg-violet-500 peer-checked:text-white"
+            >
+            <fa-icon [icon]="faCheck"></fa-icon>
+          </label>
+        </div>
+        <div class="flex items-center mr-4">
+          <input
+            id="gray-radio"
+            type="radio"
+            value="gray"
+            name="backgroundColor"
+            [(ngModel)]="editBackgroundColor"
+            class="hidden peer"
+          />
+          <label
+            for="gray-radio"
+            class="inline-flex items-center justify-center w-8 h-8 text-transparent border border-gray-200 rounded cursor-pointer bg-gray-700 hover:bg-gray-500 peer-checked:text-white"
+            >
+            <fa-icon [icon]="faCheck"></fa-icon>
+          </label>
+        </div>
+      </div>
+      
+      <div class="flex space-x-2 justify-end mt-4">
+        <app-btn color="success" (click)="editBoard(editTitle, editBackgroundColor)">Guardar</app-btn>
+        <app-btn color="light" (click)="closeEditarForm()">Cancelar</app-btn>
+      </div>
+    </div>
+  </div>
+
+</div>
